@@ -1,5 +1,31 @@
 package com.ecommerce.model.pagamento;
 
+import java.time.LocalDateTime;
+
+// Implementação inicial baseada no diagrama UML. Algumas funcionalidades possuem apenas a estrutura básica e serão implementadas posteriormente.
+
 public class PagamentoPix extends Pagamento {
-    // TODO: Implementar a classe
+
+
+    private String chavePix;
+    private String codigoPix;
+
+    public PagamentoPix(String id, double valor, LocalDateTime dataProcessamento, boolean processado, String codigoPix, String chavePix) {
+        super(id, valor, dataProcessamento, processado);
+        this.chavePix = chavePix;
+        this.codigoPix = codigoPix;
+    }
+    
+    public void processar(){
+
+    } 
+
+    public String getDescricao(){
+        return "Teste"; 
+    }
+    
+    private String gerarCodigoPix(){
+        return "codigo aleatorio";
+    }
+
 }
