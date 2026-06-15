@@ -17,10 +17,12 @@ public class PagamentoCartao extends Pagamento {
         this.nomeTitular = nomeTitular;
     }
 
+    @Override
     public void processar(){
 
     }
 
+    @Override
     public String getDescricao(){
         return "Teste"; 
     }

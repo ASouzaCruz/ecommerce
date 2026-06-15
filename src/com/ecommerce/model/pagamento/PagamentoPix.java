@@ -15,11 +15,13 @@ public class PagamentoPix extends Pagamento {
         this.chavePix = chavePix;
         this.codigoPix = codigoPix;
     }
-    
+
+    @Override
     public void processar(){
 
     } 
 
+    @Override
     public String getDescricao(){
         return "Teste"; 
     }

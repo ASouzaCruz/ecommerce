@@ -15,6 +15,7 @@ public abstract class Produto {
         this.descricao = descricao;
         this.preco = preco;
         this.ativo = true;
+        
     }
 
     public abstract double calcularFrete();
