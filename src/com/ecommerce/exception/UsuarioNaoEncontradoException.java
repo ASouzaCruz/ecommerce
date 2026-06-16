@@ -1,5 +1,8 @@
 package com.ecommerce.exception;
 
 public class UsuarioNaoEncontradoException extends RuntimeException {
-    // TODO: Implementar a classe
+    public UsuarioNaoEncontradoException(String identificador) {
+        super("Usuario nao encontrado: " + identificador);
+    }
 }
+

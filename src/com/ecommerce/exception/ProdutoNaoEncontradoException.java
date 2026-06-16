@@ -1,5 +1,7 @@
 package com.ecommerce.exception;
 
 public class ProdutoNaoEncontradoException extends RuntimeException {
-    // TODO: Implementar a classe
+    public ProdutoNaoEncontradoException(String identificador) {
+        super("Produto nao encontrado: " + identificador);
+    }
 }

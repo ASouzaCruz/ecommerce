@@ -1,5 +1,7 @@
 package com.ecommerce.exception;
 
 public class PedidoInvalidoException extends RuntimeException {
-    // TODO: Implementar a classe
+    public PedidoInvalidoException(String mensagem) {
+        super(mensagem);
+    }
 }
