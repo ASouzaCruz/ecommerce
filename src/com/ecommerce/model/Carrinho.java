@@ -10,12 +10,17 @@ public class Carrinho {
     private String id;
     private List<ItemPedido> itens;
 
-    public void adicionarItem(ItemPedido item){
+    public Carrinho(String id, List<ItemPedido> itens) {
+        this.id = id;
+        this.itens = itens;
+    }
 
+    public void adicionarItem(ItemPedido item){
+        itens.add(item);
     }
 
     public void removerItem(String id){
-
+        itens.removeIf(item -> item.getId().equals(id));
     }
 
     public double calcularTotal(){
@@ -28,13 +33,21 @@ public class Carrinho {
 
     public void limpar(){
 
+        if(estaVazio()){
+            System.out.println("Carrinho ja esta vazio!");
+            return;
+        }
+
+        itens.clear();
+
     }
 
     public boolean estaVazio(){
-        return true;
+        return itens.isEmpty();
     }
 
     public List<ItemPedido> getItens(){
         return itens;
     }
+
 }
