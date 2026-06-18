@@ -22,8 +22,12 @@ public abstract class Pagamento {
 
     public abstract String getDescricao();
 
+    // qual o sentido desta funcao quando ja existe processar?
+
     public void marcarComoProcessado(){
     }
+
+    //
 
     public String getId(){
         return id;

@@ -22,7 +22,7 @@ public class Carrinho {
     public void removerItem(String id){
         itens.removeIf(item -> item.getId().equals(id));
     }
-
+    
     public double calcularTotal(){
         return 20;
     }
@@ -42,9 +42,12 @@ public class Carrinho {
 
     }
 
+    // pode ser trocado por apenas uma condicao logica dentro do limpar()
     public boolean estaVazio(){
         return itens.isEmpty();
     }
+
+    //
 
     public List<ItemPedido> getItens(){
         return itens;
