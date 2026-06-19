@@ -4,6 +4,7 @@ public class ProdutoFisico extends Produto {
     private double pesoKg;
     private int estoque;
 
+    // talvez esse atributo devese estar em outro local, como em carrinho ou pedido
     private static final double TARIFA_KG = 5.0;
 
 
@@ -12,17 +13,10 @@ public class ProdutoFisico extends Produto {
         super(id,nome,descricao,preco);
 
         this.pesoKg = pesoKg;
+
+        // talvez seja meelhor trocar estoque por outra variavel, nao faz tanto sentido ela esta atrelada totalmente a produto fisico
         this.estoque = estoque;
     }
-
-
-    @Override
-    public double calcularFrete(){
-
-        return pesoKg * TARIFA_KG;
-
-    }
-
 
     @Override
     public boolean estaDisponivel(){
@@ -37,5 +31,11 @@ public class ProdutoFisico extends Produto {
 
         return "Produto Físico";
 
+    }
+
+    //funcoes adicionadas depois
+
+    public double getPesoKg() {
+        return pesoKg;
     }
 }

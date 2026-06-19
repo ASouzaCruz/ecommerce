@@ -18,7 +18,6 @@ public abstract class Produto {
         
     }
 
-    public abstract double calcularFrete();
 
     public abstract boolean estaDisponivel();
 

@@ -42,15 +42,16 @@ public class Carrinho {
 
     }
 
-    // pode ser trocado por apenas uma condicao logica dentro do limpar()
     public boolean estaVazio(){
         return itens.isEmpty();
     }
 
-    //
-
     public List<ItemPedido> getItens(){
         return itens;
+    }
+
+    public String getId(){
+        return id;
     }
 
 }

@@ -13,16 +13,38 @@ public class Pedido {
     private LocalDateTime dataCriacao, dataAtualizacao;
     private List<ItemPedido> itens;
 
-    public void avancarEstado(EstadoPedido estado){
+    public Pedido(String id, EstadoPedido estado, List<ItemPedido> itens) {
+        this.id = id;
+        this.estado = EstadoPedido.ABERTO;
+        this.dataCriacao = LocalDateTime.now();
+        this.dataAtualizacao = LocalDateTime.now();
+        this.itens = itens;
+    }
+
+    public void avancarEstado(EstadoPedido novoEstado){
+
+        if(estado.podeTransicionarPara(novoEstado)){
+            this.estado = novoEstado;
+            this.dataAtualizacao = LocalDateTime.now();
+        }
+        else{
+            System.out.println("Transição de estado inválida!");
+        }
 
     }
 
     public void registrarPagamento(){
 
+        avancarEstado(EstadoPedido.PAGO);
+        System.out.println("Pagamento realizado!");
+
     }
 
     public void cancelar(){
 
+        avancarEstado(EstadoPedido.CANCELADO);
+        System.out.println("Pedido cancelado!");
+        
     }
 
     public double calcularTotal(){
@@ -39,5 +61,15 @@ public class Pedido {
 
     public EstadoPedido getEstado(){
         return estado;
+    }
+
+    // funcaos adicionadas depois
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
     }
 }

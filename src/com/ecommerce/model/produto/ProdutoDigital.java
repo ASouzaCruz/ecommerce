@@ -15,14 +15,6 @@ public class ProdutoDigital extends Produto {
 
 
     @Override
-    public double calcularFrete(){
-
-        return 0;
-
-    }
-
-
-    @Override
     public boolean estaDisponivel(){
 
         return true;
@@ -35,5 +27,16 @@ public class ProdutoDigital extends Produto {
 
         return "Produto Digital";
 
+    }
+
+    //funcoes adicionadas depois
+
+    public String getLinkDownload() {
+        return linkDownload;
+    }
+
+
+    public String getFormato() {
+        return formato;
     }
 }

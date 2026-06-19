@@ -23,6 +23,10 @@ public abstract class Usuario {
         return id;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
     public String getEmail(){
         return email;
     }
