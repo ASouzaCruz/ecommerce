@@ -1,43 +1,47 @@
 package com.ecommerce;
 
-import java.util.ArrayList;
-
-import com.ecommerce.model.Carrinho;
-import com.ecommerce.model.ItemPedido;
+import com.ecommerce.model.usuario.*;
+import com.ecommerce.model.produto.*;
+import com.ecommerce.repository.*;
+import com.ecommerce.service.PersistenciaService;
+import com.ecommerce.ui.Menu;
+import java.util.List;
 
 public class Main {
-
-    //fazendo apenas testes aleatorios, nao reflete o que sera feito de fato no projeto final
-
     public static void main(String[] args) {
+        PersistenciaService persistencia = new PersistenciaService();
+        ProdutoRepository produtoRepo = new ProdutoRepository();
+        UsuarioRepository usuarioRepo = new UsuarioRepository();
+        PedidoRepository pedidoRepo   = new PedidoRepository();
 
-        Carrinho carrinho = new Carrinho("C001", new ArrayList<>());
+        // Carrega dados persistidos
+        List<com.ecommerce.model.produto.Produto> produtos = persistencia.carregarProdutos();
+        if (!produtos.isEmpty()) {
+            produtoRepo.setProdutos(produtos);
+            System.out.println(produtos.size() + " produto(s) carregado(s).");
+        }
 
-        System.out.println("Carrinho vazio? " + carrinho.estaVazio());
+        List<com.ecommerce.model.usuario.Usuario> usuarios = persistencia.carregarUsuarios();
+        if (!usuarios.isEmpty()) {
+            usuarioRepo.setUsuarios(usuarios);
+            System.out.println(usuarios.size() + " usuario(s) carregado(s).");
+        }
 
-        ItemPedido item1 = new ItemPedido("I001", 2, 10.0, 5.0);
-        ItemPedido item2 = new ItemPedido("I002", 1, 20.0, 8.0);
+        // Dados iniciais se nao houver nada salvo
+        if (produtoRepo.listarTodos().isEmpty()) {
+            produtoRepo.salvar(new ProdutoFisico("Teclado Mecanico", "Switch Blue, RGB", 350.0, 1.2, 15));
+            produtoRepo.salvar(new ProdutoFisico("Mouse Gamer", "DPI ajustavel, 6 botoes", 180.0, 0.3, 30));
+            produtoRepo.salvar(new ProdutoDigital("Curso Java POO", "40h de conteudo", 99.90, "https://cursos.com/java", "ZIP"));
+            produtoRepo.salvar(new ProdutoDigital("Ebook Clean Code", "Boas praticas de codigo", 29.90, "https://ebooks.com/clean", "PDF"));
+            System.out.println("Produtos de exemplo criados.");
+        }
 
-        carrinho.adicionarItem(item1);
-        carrinho.adicionarItem(item2);
+        if (usuarioRepo.listarTodos().isEmpty()) {
+            usuarioRepo.salvar(new Administrador("Admin", "admin@loja.com", "admin123", "Gerente", true));
+            usuarioRepo.salvar(new Cliente("Joao Silva", "joao@email.com", "senha123", "12345678901"));
+            System.out.println("Usuarios de exemplo criados.");
+        }
 
-        System.out.println("Quantidade de itens: " + carrinho.getItens().size());
-
-        System.out.println("Carrinho vazio? " + carrinho.estaVazio());
-
-        carrinho.removerItem("I001");
-
-        System.out.println("Quantidade após remover I001: "
-                + carrinho.getItens().size());
-
-        carrinho.limpar();
-
-        System.out.println("Quantidade após limpar: "
-                + carrinho.getItens().size());
-
-        System.out.println("Carrinho vazio? " + carrinho.estaVazio());
-
-        carrinho.limpar(); // testar carrinho já vazio
+        new Menu(produtoRepo, usuarioRepo, pedidoRepo, persistencia).iniciar();
     }
-
 }
