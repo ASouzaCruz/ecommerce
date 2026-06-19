@@ -8,42 +8,39 @@ public class Cliente extends Usuario {
     private String cpf;
     private List<Endereco> enderecos;
 
-    public Cliente(String id, String nome, String email, String senha, String cpf){
-
-        super(id, nome, email, senha);
-
-        this.cpf = cpf;
+    public Cliente(String nome, String email, String senha, String cpf) {
+        super(nome, email, senha);
+        if (cpf == null || cpf.replaceAll("[^0-9]", "").length() != 11)
+            throw new IllegalArgumentException("CPF invalido. Deve conter 11 digitos.");
+        this.cpf = cpf.replaceAll("[^0-9]", "");
         this.enderecos = new ArrayList<>();
     }
 
     @Override
-    public boolean podeGerenciarProdutos(){
-        return false;
-    }
+    public boolean podeGerenciarProdutos() { return false; }
 
     @Override
-    public boolean podeVisualizarRelatorios(){
-        return false;
-    }
+    public boolean podeVisualizarRelatorios() { return false; }
 
     @Override
-    public String getPerfil(){
-        return "Cliente";
+    public String getPerfil() { return "CLIENTE"; }
+
+    public void adicionarEndereco(Endereco endereco) {
+        if (endereco == null) throw new IllegalArgumentException("Endereco invalido.");
+        this.enderecos.add(endereco);
     }
 
-    public void adicionarEndereco(Endereco endereco){
-        enderecos.add(endereco);
+    public void removerEndereco(int index) {
+        if (index < 0 || index >= enderecos.size())
+            throw new IndexOutOfBoundsException("Endereco nao encontrado.");
+        enderecos.remove(index);
     }
 
-    public void removerEndereco(String id){
-        enderecos.removeIf(endereco -> endereco.getId().equals(id));
-    }
+    public String getCpf() { return cpf; }
+    public List<Endereco> getEnderecos() { return enderecos; }
 
-    public Endereco getEnderecoEntrega(){
-        if(enderecos.isEmpty()){
-            return null;
-        }
-
+    public Endereco getEnderecoEntrega() {
+        if (enderecos.isEmpty()) throw new IllegalStateException("Cliente nao possui endereco cadastrado.");
         return enderecos.get(0);
     }
 }
