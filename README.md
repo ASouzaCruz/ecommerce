@@ -184,9 +184,19 @@ Responsável pelo armazenamento e gerenciamento dos dados:
 
 ## Service
 
-Contém serviços responsáveis pelas regras auxiliares do sistema:
+Responsável por funcionalidades auxiliares e regras de persistência.
+
+Classe principal:
 
 - `PersistenciaService`
+
+Responsabilidades:
+
+- Criar a pasta de armazenamento
+- Salvar dados em arquivos CSV
+- Ler informações persistidas
+- Restaurar dados ao iniciar o sistema
+
 
 ---
 
