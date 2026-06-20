@@ -1,30 +1,32 @@
 package com.ecommerce.repository;
 
+import com.ecommerce.exception.PedidoInvalidoException;
+import com.ecommerce.model.Pedido;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import com.ecommerce.model.Pedido;
-
-// Implementação inicial baseada no diagrama UML.
-// Algumas funcionalidades possuem apenas a estrutura básica e serão implementadas posteriormente.
+import java.util.stream.Collectors;
 
 public class PedidoRepository {
+    private List<Pedido> pedidos = new ArrayList<>();
 
-    private List<Pedido> pedidos;
+    public void salvar(Pedido pedido) { pedidos.add(pedido); }
 
-    public void salvar(String id){
+    public Optional<Pedido> buscarPorId(String id) {
+        return pedidos.stream().filter(p -> p.getId().equals(id)).findFirst();
     }
 
-    public Optional<Pedido> buscarPorId(String id){
-        return null;
+    public Pedido buscarPorIdOuErro(String id) {
+        return buscarPorId(id).orElseThrow(() -> new PedidoInvalidoException("Pedido nao encontrado: " + id));
     }
 
-    public List<Pedido> listarTodos(){
-        return pedidos;
+    public List<Pedido> listarTodos() { return new ArrayList<>(pedidos); }
+
+    public List<Pedido> listarPorCliente(String clienteId) {
+        return pedidos.stream()
+                .filter(p -> p.getCliente().getId().equals(clienteId))
+                .collect(Collectors.toList());
     }
 
-    public List<Pedido> listarPorCliente(String id){
-        return pedidos;
-    }
-
+    public void setPedidos(List<Pedido> pedidos) { this.pedidos = pedidos; }
 }
