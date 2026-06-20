@@ -351,18 +351,36 @@ public class Menu {
     private void adicionarAoCarrinho() {
         listarProdutos();
         System.out.println();
-        System.out.print("  ID do produto: "); 
-        String id = sc.nextLine().trim();
-        System.out.print("  Quantidade:   ");    
+        System.out.print("  Digite o NOME do produto: ");
+        String nomeProduto = sc.nextLine().trim();
+        System.out.print("  Quantidade:   ");
         int qtd = Integer.parseInt(sc.nextLine().trim());
         try {
-            Produto p = produtoRepo.buscarPorIdOuErro(id);
+            // Permite buscar pelo nome (ignora maiúsculas/minúsculas)
+            Produto p = buscarProdutoPorNomeOuErro(nomeProduto);
             carrinho.adicionarItem(p, qtd);
             System.out.println("  ✓ Produto adicionado ao carrinho!");
         } catch (Exception e) {
             System.out.println("  ❌ Erro: " + e.getMessage());
         }
     }
+
+    private Produto buscarProdutoPorNomeOuErro(String nomeProduto) {
+        List<Produto> disponiveis = produtoRepo.listarDisponiveis();
+        for (Produto p : disponiveis) {
+            if (p.getNome().equalsIgnoreCase(nomeProduto)) {
+                return p;
+            }
+        }
+        // Se não encontrar em disponíveis, tenta em todos (caso o menu liste tudo, ou produto esteja inativo)
+        for (Produto p : produtoRepo.listarTodos()) {
+            if (p.getNome().equalsIgnoreCase(nomeProduto)) {
+                return p;
+            }
+        }
+        throw new ProdutoNaoEncontradoException("Nome: '" + nomeProduto + "'");
+    }
+
 
     private void removerDoCarrinho() {
         imprimirTitulo("REMOVER DO CARRINHO");
