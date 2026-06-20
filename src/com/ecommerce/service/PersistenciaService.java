@@ -1,13 +1,10 @@
 package com.ecommerce.service;
 
 import com.ecommerce.model.*;
-import com.ecommerce.model.pagamento.*;
 import com.ecommerce.model.produto.*;
 import com.ecommerce.model.usuario.*;
-import com.ecommerce.repository.*;
 
 import java.io.*;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class PersistenciaService {
@@ -118,7 +115,7 @@ public class PersistenciaService {
     // ── PEDIDOS (simplificado) ────────────────────────────────────────────────
     public void salvarPedidos(List<Pedido> pedidos, List<Produto> produtos) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(ARQ_PEDIDOS));
-             PrintWriter pwI = new PrintWriter(new FileWriter(ARQ_ITENS))) {
+            PrintWriter pwI = new PrintWriter(new FileWriter(ARQ_ITENS))) {
             pw.println("id;clienteId;estado;dataCriacao;dataAtualizacao");
             pwI.println("pedidoId;produtoId;quantidade;precoUnitario");
             for (Pedido p : pedidos) {
