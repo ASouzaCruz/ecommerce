@@ -1,7 +1,6 @@
 package com.ecommerce.model;
 
 public enum EstadoPedido {
-
     ABERTO,
     PAGO,
     SEPARANDO,
@@ -9,28 +8,15 @@ public enum EstadoPedido {
     ENTREGUE,
     CANCELADO;
 
-// Verifica se o pedido pode mudar para o estado informado
-
-    public boolean podeTransicionarPara (EstadoPedido estadoPedido){
-        
-        if(this == ABERTO && estadoPedido == PAGO){
-            return true;
+    public boolean podeTransicionarPara(EstadoPedido proximo) {
+        switch (this) {
+            case ABERTO:     return proximo == PAGO || proximo == CANCELADO;
+            case PAGO:       return proximo == SEPARANDO || proximo == CANCELADO;
+            case SEPARANDO:  return proximo == ENVIADO || proximo == CANCELADO;
+            case ENVIADO:    return proximo == ENTREGUE;
+            case ENTREGUE:   return false;
+            case CANCELADO:  return false;
+            default:         return false;
         }
-        else if(this == PAGO && estadoPedido == SEPARANDO){
-            return true;
-        }
-        else if(this == SEPARANDO && estadoPedido == ENVIADO){
-            return true;
-        }
-        else if(this == ENVIADO && estadoPedido == ENTREGUE){
-            return true;
-        }
-        else if((this == ABERTO || this == PAGO || this == SEPARANDO) && estadoPedido == CANCELADO){
-            return true;
-        }
-
-        return false;
-
     }
-
 }

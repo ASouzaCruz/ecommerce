@@ -1,57 +1,71 @@
 package com.ecommerce.model;
 
+import com.ecommerce.exception.EstoqueInsuficienteException;
+import com.ecommerce.model.produto.Produto;
+import com.ecommerce.model.produto.ProdutoFisico;
+import java.util.ArrayList;
 import java.util.List;
-
-// Implementação inicial baseada no diagrama UML.
-// Algumas funcionalidades possuem apenas a estrutura básica e serão implementadas posteriormente.
+import java.util.Optional;
 
 public class Carrinho {
-    
-    private String id;
     private List<ItemPedido> itens;
 
-    public Carrinho(String id, List<ItemPedido> itens) {
-        this.id = id;
-        this.itens = itens;
+    public Carrinho() {
+        this.itens = new ArrayList<>();
     }
 
-    public void adicionarItem(ItemPedido item){
-        itens.add(item);
-    }
+    public void adicionarItem(Produto produto, int quantidade) {
+        // Regra de negocio: produto indisponivel nao pode ser adicionado
+        if (!produto.estaDisponivel())
+            throw new IllegalStateException("Produto '" + produto.getNome() + "' nao esta disponivel para compra.");
 
-    public void removerItem(String id){
-        itens.removeIf(item -> item.getId().equals(id));
-    }
-    
-    public double calcularTotal(){
-        return 20;
-    }
-
-    public double calcularTotalFrete(){
-        return 10;
-    }
-
-    public void limpar(){
-
-        if(estaVazio()){
-            System.out.println("Carrinho ja esta vazio!");
-            return;
+        // Regra de negocio: verifica estoque para produtos fisicos
+        if (produto instanceof ProdutoFisico fisico) {
+            int jaNoCarrinho = getQuantidadeNoPedido(produto.getId());
+            if (jaNoCarrinho + quantidade > fisico.getEstoque())
+                throw new EstoqueInsuficienteException(produto.getNome(), fisico.getEstoque(), jaNoCarrinho + quantidade);
         }
 
-        itens.clear();
+        Optional<ItemPedido> existente = itens.stream()
+                .filter(i -> i.getProduto().getId().equals(produto.getId()))
+                .findFirst();
 
+        if (existente.isPresent()) {
+            existente.get().setQuantidade(existente.get().getQuantidade() + quantidade);
+        } else {
+            itens.add(new ItemPedido(produto, quantidade));
+        }
     }
 
-    public boolean estaVazio(){
-        return itens.isEmpty();
+    public void removerItem(String produtoId) {
+        boolean removido = itens.removeIf(i -> i.getProduto().getId().equals(produtoId));
+        if (!removido) throw new IllegalArgumentException("Produto nao encontrado no carrinho.");
     }
 
-    public List<ItemPedido> getItens(){
-        return itens;
+    public void limpar() { itens.clear(); }
+
+    public boolean estaVazio() { return itens.isEmpty(); }
+
+    public double calcularTotal() {
+        return itens.stream().mapToDouble(ItemPedido::calcularSubtotal).sum();
     }
 
-    public String getId(){
-        return id;
+    public double calcularFrete() {
+        return itens.stream().mapToDouble(ItemPedido::calcularFrete).sum();
     }
 
+    private int getQuantidadeNoPedido(String produtoId) {
+        return itens.stream()
+                .filter(i -> i.getProduto().getId().equals(produtoId))
+                .mapToInt(ItemPedido::getQuantidade).sum();
+    }
+
+    public List<ItemPedido> getItens() { return new ArrayList<>(itens); }
+
+    public void exibir() {
+        if (estaVazio()) { System.out.println("  Carrinho vazio."); return; }
+        itens.forEach(i -> System.out.println("  " + i));
+        System.out.printf("  Subtotal: R$ %.2f | Frete: R$ %.2f | Total: R$ %.2f%n",
+                calcularTotal(), calcularFrete(), calcularTotal() + calcularFrete());
+    }
 }

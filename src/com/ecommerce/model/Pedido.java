@@ -1,75 +1,91 @@
 package com.ecommerce.model;
 
+import com.ecommerce.exception.PedidoInvalidoException;
+import com.ecommerce.exception.CarrinhoVazioException;
+import com.ecommerce.model.pagamento.Pagamento;
+import com.ecommerce.model.usuario.Cliente;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-
-// Implementação inicial baseada no diagrama UML.
-// Algumas funcionalidades possuem apenas a estrutura básica e serão implementadas posteriormente.
+import java.util.UUID;
 
 public class Pedido {
-
     private String id;
-    private EstadoPedido estado;
-    private LocalDateTime dataCriacao, dataAtualizacao;
+    private Cliente cliente;
     private List<ItemPedido> itens;
+    private EstadoPedido estado;
+    private Pagamento pagamento;
+    private LocalDateTime dataCriacao;
+    private LocalDateTime dataAtualizacao;
+    private Endereco enderecoEntrega;
 
-    public Pedido(String id, EstadoPedido estado, List<ItemPedido> itens) {
-        this.id = id;
+    public Pedido(Cliente cliente, List<ItemPedido> itens, Endereco enderecoEntrega) {
+        if (itens == null || itens.isEmpty()) throw new CarrinhoVazioException();
+        if (enderecoEntrega == null) throw new IllegalArgumentException("Endereco de entrega obrigatorio.");
+        this.id = UUID.randomUUID().toString();
+        this.cliente = cliente;
+        this.itens = new ArrayList<>(itens);
         this.estado = EstadoPedido.ABERTO;
         this.dataCriacao = LocalDateTime.now();
         this.dataAtualizacao = LocalDateTime.now();
-        this.itens = itens;
+        this.enderecoEntrega = enderecoEntrega;
     }
 
-    public void avancarEstado(EstadoPedido novoEstado){
-
-        if(estado.podeTransicionarPara(novoEstado)){
-            this.estado = novoEstado;
-            this.dataAtualizacao = LocalDateTime.now();
-        }
-        else{
-            System.out.println("Transição de estado inválida!");
-        }
-
+    // Estado dinamico com regras de transicao
+    public void avancarEstado(EstadoPedido novoEstado) {
+        if (!estado.podeTransicionarPara(novoEstado))
+            throw new PedidoInvalidoException(
+                String.format("Transicao invalida: %s -> %s", estado, novoEstado));
+        this.estado = novoEstado;
+        this.dataAtualizacao = LocalDateTime.now();
     }
 
-    public void registrarPagamento(){
-
+    public void registrarPagamento(Pagamento pagamento) {
+        if (estado != EstadoPedido.ABERTO)
+            throw new PedidoInvalidoException("Pagamento so pode ser registrado em pedidos ABERTOS.");
+        pagamento.processar();
+        this.pagamento = pagamento;
         avancarEstado(EstadoPedido.PAGO);
-        System.out.println("Pagamento realizado!");
-
     }
 
-    public void cancelar(){
-
-        avancarEstado(EstadoPedido.CANCELADO);
-        System.out.println("Pedido cancelado!");
-        
+    public void cancelar() {
+        if (!estado.podeTransicionarPara(EstadoPedido.CANCELADO))
+            throw new PedidoInvalidoException("Pedido no estado " + estado + " nao pode ser cancelado.");
+        this.estado = EstadoPedido.CANCELADO;
+        this.dataAtualizacao = LocalDateTime.now();
     }
 
-    public double calcularTotal(){
-        return 10;
+    public double calcularTotal() {
+        return itens.stream().mapToDouble(ItemPedido::calcularSubtotal).sum();
     }
 
-    public double calcularTotalFrete(){
-        return 20;
+    public double calcularTotalFrete() {
+        return itens.stream().mapToDouble(ItemPedido::calcularFrete).sum();
     }
 
-    public String getId(){
-        return id;
-    } 
-
-    public EstadoPedido getEstado(){
-        return estado;
+    public double calcularTotalComFrete() {
+        return calcularTotal() + calcularTotalFrete();
     }
 
-    // funcaos adicionadas depois
+    public String getId() { return id; }
+    public Cliente getCliente() { return cliente; }
+    public List<ItemPedido> getItens() { return itens; }
+    public EstadoPedido getEstado() { return estado; }
+    public Pagamento getPagamento() { return pagamento; }
+    public LocalDateTime getDataCriacao() { return dataCriacao; }
+    public LocalDateTime getDataAtualizacao() { return dataAtualizacao; }
+    public Endereco getEnderecoEntrega() { return enderecoEntrega; }
+    public void setId(String id) { this.id = id; }
+    public void setEstado(EstadoPedido estado) { this.estado = estado; }
+    public void setDataCriacao(LocalDateTime data) { this.dataCriacao = data; }
+    public void setDataAtualizacao(LocalDateTime data) { this.dataAtualizacao = data; }
 
-    public LocalDateTime getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public LocalDateTime getDataAtualizacao() {
-        return dataAtualizacao;
+    @Override
+    public String toString() {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        return String.format("Pedido #%s | Cliente: %s | Estado: %s | Total: R$ %.2f | Data: %s",
+                id.substring(0, 8), cliente.getNome(), estado, calcularTotalComFrete(),
+                dataCriacao.format(fmt));
     }
 }
