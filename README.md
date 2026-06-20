@@ -1,4 +1,4 @@
-# 🛒 E-Commerce Java
+# E-Commerce Java
 
 Sistema de e-commerce desenvolvido em **Java**, utilizando conceitos de **Programação Orientada a Objetos (POO)** e organização em camadas.
 
@@ -6,7 +6,7 @@ O projeto simula uma loja virtual, permitindo o gerenciamento de usuários, prod
 
 ---
 
-# 📂 Estrutura do projeto
+# Estrutura do projeto
 
 O projeto está organizado seguindo uma divisão por responsabilidades:
 
@@ -53,7 +53,7 @@ src
 
 ---
 
-# 🚀 Como executar o projeto
+# Como executar o projeto
 
 ## 1. Pré-requisitos
 
@@ -123,7 +123,7 @@ Após a execução, o sistema iniciará o menu interativo no terminal.
 
 ---
 
-# 🖥️ Funcionalidades
+# Funcionalidades
 
 O sistema permite:
 
@@ -138,7 +138,7 @@ O sistema permite:
 
 ---
 
-# 🧩 Organização das camadas
+# Organização das camadas
 
 ## Model
 
@@ -220,7 +220,7 @@ Contém exceções específicas criadas para controlar situações de erro:
 
 ---
 
-# 🧠 Conceitos de Programação Orientada a Objetos aplicados
+# Conceitos de Programação Orientada a Objetos aplicados
 
 Durante o desenvolvimento foram utilizados:
 
@@ -235,7 +235,7 @@ Durante o desenvolvimento foram utilizados:
 
 ---
 
-# 🧪 Teste
+# Teste
 
 O teste esta localizado no pacote:
 
@@ -251,7 +251,7 @@ TesteUnidadePeso.java
 
 ---
 
-# 📄 Diagrama UML
+# Diagrama UML
 
 O projeto possui um diagrama UML representando a estrutura das classes:
 
@@ -261,12 +261,12 @@ DIAGRAMA_UML_CORRIGIDO.md
 
 ---
 
-# 👨‍💻 Desenvolvimento
+# Desenvolvimento
 
 Projeto desenvolvido com o objetivo de aplicar conceitos de Java e Programação Orientada a Objetos na construção de um sistema de e-commerce.
 
 ---
 
-# 📜 Licença
+# Licença
 
 Este projeto possui finalidade acadêmica e educacional.
