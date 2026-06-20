@@ -1,5 +1,6 @@
 package com.ecommerce.model.produto;
 
+import java.util.Random;
 import java.util.UUID;
 
 public abstract class Produto {
@@ -12,7 +13,8 @@ public abstract class Produto {
     public Produto(String nome, String descricao, double preco) {
         if (nome == null || nome.isBlank()) throw new IllegalArgumentException("Nome do produto nao pode ser vazio.");
         if (preco < 0) throw new IllegalArgumentException("Preco nao pode ser negativo.");
-        this.id = UUID.randomUUID().toString();
+        Random random = new Random();
+        this.id = "PROD" +  random.nextInt(10000);
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
