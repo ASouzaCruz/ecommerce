@@ -76,7 +76,8 @@ Clone o projeto utilizando:
 ```bash
 git clone https://github.com/ASouzaCruz/ecommerce.git
 ```
-```Arquivo zipado: 
+Arquivo zipado:
+``` 
 
 ```
 
