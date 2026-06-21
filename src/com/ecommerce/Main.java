@@ -43,7 +43,7 @@ public class Main {
             System.out.println("Usuarios de exemplo criados.");
         }
 
-        // --- A SOLUÇÃO ESTÁ AQUI: CARREGAR OS PEDIDOS ---
+        // CARREGAR OS PEDIDOS
         // Usamos listarTodos() dos repositórios para garantir que temos a lista completa (incluindo os de exemplo, se foram criados agora)
         List<Pedido> pedidos = persistencia.carregarPedidos(usuarioRepo.listarTodos(), produtoRepo.listarTodos());
         
@@ -51,7 +51,6 @@ public class Main {
             pedidoRepo.setPedidos(pedidos); 
             System.out.println(pedidos.size() + " pedido(s) carregado(s).");
         }
-        // ------------------------------------------------
 
         new Menu(produtoRepo, usuarioRepo, pedidoRepo, persistencia).iniciar();
     }
