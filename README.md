@@ -78,6 +78,7 @@ git clone https://github.com/ASouzaCruz/ecommerce.git
 ```
 Arquivo zipado:
 ``` 
+[Clique para baixar o projeto zipado](https://github.com/user-attachments/files/29183110/ecommerce-master.zip)
 
 ```
 
