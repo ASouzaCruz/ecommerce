@@ -48,8 +48,6 @@ public class Main {
         List<Pedido> pedidos = persistencia.carregarPedidos(usuarioRepo.listarTodos(), produtoRepo.listarTodos());
         
         if (!pedidos.isEmpty()) {
-            // OBS: Verifique se o seu PedidoRepository tem o método setPedidos() ou similar.
-            // Caso tenha um nome diferente (ex: inicializarLista), ajuste a linha abaixo.
             pedidoRepo.setPedidos(pedidos); 
             System.out.println(pedidos.size() + " pedido(s) carregado(s).");
         }
