@@ -31,6 +31,16 @@ public class Pedido {
         this.dataAtualizacao = LocalDateTime.now();
         this.enderecoEntrega = enderecoEntrega;
     }
+    //construtor pra persistencia
+    public Pedido(String id, Cliente cliente, EstadoPedido estado, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
+        this.id = id;
+        this.cliente = cliente;
+        this.estado = estado;
+        this.dataCriacao = dataCriacao;
+        this.dataAtualizacao = dataAtualizacao;
+        this.itens = new ArrayList<>();
+        this.enderecoEntrega = null; // Não temos isso no CSV atual
+    }
 
     // Estado dinamico com regras de transicao
     public void avancarEstado(EstadoPedido novoEstado) {

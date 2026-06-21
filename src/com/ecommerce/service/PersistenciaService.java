@@ -4,7 +4,9 @@ import com.ecommerce.model.*;
 import com.ecommerce.model.produto.*;
 import com.ecommerce.model.usuario.*;
 
+
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class PersistenciaService {
@@ -185,4 +187,87 @@ public class PersistenciaService {
             System.err.println("Erro ao salvar pedidos: " + e.getMessage());
         }
     }
+
+    public List<Pedido> carregarPedidos(List<com.ecommerce.model.usuario.Usuario> usuarios, List<Produto> produtos) {
+        // 1. Mapas para busca rápida (Evita lentidão ao procurar por IDs)
+        Map<String, com.ecommerce.model.usuario.Usuario> usuariosMap = new HashMap<>();
+        for (var u : usuarios) {
+            usuariosMap.put(u.getId(), u);
+        }
+
+        Map<String, Produto> produtosMap = new HashMap<>();
+        for (Produto p : produtos) {
+            produtosMap.put(p.getId(), p);
+        }
+
+        // LinkedHashMap mantém a ordem original do arquivo
+        Map<String, Pedido> pedidosMap = new LinkedHashMap<>(); 
+
+        // 2. LER OS PEDIDOS (Cabeçalhos)
+        File fPedidos = new File(ARQ_PEDIDOS);
+        if (fPedidos.exists()) {
+            try (BufferedReader br = new BufferedReader(new FileReader(fPedidos))) {
+                br.readLine(); // Pula header: id;clienteId;estado;dataCriacao;dataAtualizacao
+                String linha;
+                while ((linha = br.readLine()) != null) {
+                    String[] c = linha.split(SEP, -1);
+                    if (c.length < 5) continue;
+
+                    String pedidoId = c[0];
+                    String clienteId = c[1];
+                    String estadoStr = c[2];
+                    String dataCriacaoStr = c[3];
+                    String dataAtualizacaoStr = c[4];
+
+                    var usuario = usuariosMap.get(clienteId);
+                    if (usuario instanceof Cliente cliente) {
+                        // Converte Strings para Enum e LocalDateTime
+                        EstadoPedido estado = EstadoPedido.valueOf(estadoStr);
+                        LocalDateTime dataCriacao = LocalDateTime.parse(dataCriacaoStr);
+                        LocalDateTime dataAtualizacao = LocalDateTime.parse(dataAtualizacaoStr);
+
+                        // Usa o construtor de persistência que criamos
+                        Pedido pedido = new Pedido(pedidoId, cliente, estado, dataCriacao, dataAtualizacao);
+                        pedidosMap.put(pedidoId, pedido);
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao carregar cabeçalhos dos pedidos: " + e.getMessage());
+            }
+        }
+
+        // 3. LER OS ITENS DOS PEDIDOS
+        File fItens = new File(ARQ_ITENS);
+        if (fItens.exists() && !pedidosMap.isEmpty()) {
+            try (BufferedReader br = new BufferedReader(new FileReader(fItens))) {
+                br.readLine(); // Pula header: pedidoId;produtoId;quantidade;precoUnitario
+                String linha;
+                while ((linha = br.readLine()) != null) {
+                    String[] c = linha.split(SEP, -1);
+                    if (c.length < 4) continue;
+
+                    String pedidoId = c[0];
+                    String produtoId = c[1];
+                    int quantidade = Integer.parseInt(c[2]);
+                    double precoUnitario = Double.parseDouble(c[3].replace(",", "."));
+
+                    Pedido pedido = pedidosMap.get(pedidoId);
+                    Produto produto = produtosMap.get(produtoId);
+
+                    // Se encontrou o pedido e o produto correspondentes na memória
+                    if (pedido != null && produto != null) {
+                        // Usa o construtor de persistência do ItemPedido
+                        ItemPedido item = new ItemPedido(produto, quantidade, precoUnitario);
+                        pedido.getItens().add(item);
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao carregar itens dos pedidos: " + e.getMessage());
+            }
+        }
+
+        // Retorna apenas a lista de valores (os Pedidos completos)
+        return new ArrayList<>(pedidosMap.values());
+    }
+    
 }

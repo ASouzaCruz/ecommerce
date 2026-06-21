@@ -18,6 +18,12 @@ public class ItemPedido {
         this.quantidade = quantidade;
         this.precoUnitario = produto.getPreco(); // Congelado no momento da criacao
     }
+    //construtor pra persistencia
+    public ItemPedido(Produto produto, int quantidade, double precoUnitarioHistorico) {
+        this.produto = produto;
+        this.quantidade = quantidade;
+        this.precoUnitario = precoUnitarioHistorico;
+    }
 
     public double calcularSubtotal() {
         return precoUnitario * quantidade;

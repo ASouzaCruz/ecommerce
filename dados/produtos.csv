@@ -1,0 +1,5 @@
+id;tipo;nome;descricao;preco;ativo;extra1;extra2
+PROD4663;FISICO;Teclado Mecanico;Switch Blue, RGB;350,00;true;1,20;11
+PROD143;FISICO;Mouse Gamer;DPI ajustavel, 6 botoes;180,00;true;0,30;30
+PROD3420;DIGITAL;Curso Java POO;40h de conteudo;99,90;true;https://cursos.com/java;ZIP
+PROD7138;DIGITAL;Ebook Clean Code;Boas praticas de codigo;29,90;true;https://ebooks.com/clean;PDF
