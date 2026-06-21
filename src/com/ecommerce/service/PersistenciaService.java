@@ -167,7 +167,7 @@ public class PersistenciaService {
         return lista;
     }
 
-    // ── PEDIDOS (simplificado) ────────────────────────────────────────────────
+    // ── PEDIDOS ────────────────────────────────────────────────
     public void salvarPedidos(List<Pedido> pedidos, List<Produto> produtos) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(ARQ_PEDIDOS));
             PrintWriter pwI = new PrintWriter(new FileWriter(ARQ_ITENS))) {
