@@ -1,0 +1,3 @@
+id;tipo;nome;email;senha;extra1;extra2
+de793a10-403f-4586-9f4b-83705247ff72;ADMIN;Admin;admin@loja.com;admin123;Gerente;true
+0a7f25db-76f9-4037-98d9-d745a295a8b6;CLIENTE;Joao Silva;joao@email.com;senha123;12345678901;

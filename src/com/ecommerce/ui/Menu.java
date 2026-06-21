@@ -419,7 +419,7 @@ public class Menu {
             }
 
             imprimirTitulo("FINALIZAR PEDIDO");
-            Pedido pedido = new Pedido(cliente, carrinho.getItens(), cliente.getEnderecoEntrega());
+            Pedido pedido = new Pedido(cliente, carrinho.getItens(), enderecoEscolhido);
             System.out.println();
             System.out.printf("  Subtotal:        R$ %.2f%n", pedido.calcularTotal());
             System.out.printf("  Frete:           R$ %.2f%n", pedido.calcularTotalFrete());
@@ -567,7 +567,7 @@ public class Menu {
         System.out.printf("  Total de pedidos:       %d%n", todos.size());
         System.out.printf("  Faturamento total:     R$ %.2f%n", totalVendas);
         System.out.printf("  Produtos cadastrados:  %d%n", produtoRepo.listarTodos().size());
-        System.out.printf("  Clientes cadastrados:  %d%n", usuarioRepo.listarTodos().size());
+        System.out.printf("  Clientes cadastrados:  %d%n", usuarioRepo.listarTodos().size()-1);
         System.out.println();
     }
 
