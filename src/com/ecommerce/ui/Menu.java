@@ -352,35 +352,17 @@ public class Menu {
         listarProdutos();
         System.out.println();
         System.out.print("  Digite o NOME do produto: ");
-        String nomeProduto = sc.nextLine().trim();
+        String nome = sc.nextLine().trim();
         System.out.print("  Quantidade:   ");
         int qtd = Integer.parseInt(sc.nextLine().trim());
         try {
-            // Permite buscar pelo nome (ignora maiúsculas/minúsculas)
-            Produto p = buscarProdutoPorNomeOuErro(nomeProduto);
+            Produto p = produtoRepo.buscarPorNomeOuErro(nome);
             carrinho.adicionarItem(p, qtd);
             System.out.println("  ✓ Produto adicionado ao carrinho!");
         } catch (Exception e) {
             System.out.println("  ❌ Erro: " + e.getMessage());
         }
     }
-
-    private Produto buscarProdutoPorNomeOuErro(String nomeProduto) {
-        List<Produto> disponiveis = produtoRepo.listarDisponiveis();
-        for (Produto p : disponiveis) {
-            if (p.getNome().equalsIgnoreCase(nomeProduto)) {
-                return p;
-            }
-        }
-        // Se não encontrar em disponíveis, tenta em todos (caso o menu liste tudo, ou produto esteja inativo)
-        for (Produto p : produtoRepo.listarTodos()) {
-            if (p.getNome().equalsIgnoreCase(nomeProduto)) {
-                return p;
-            }
-        }
-        throw new ProdutoNaoEncontradoException("Nome: '" + nomeProduto + "'");
-    }
-
 
     private void removerDoCarrinho() {
         imprimirTitulo("REMOVER DO CARRINHO");
@@ -398,6 +380,7 @@ public class Menu {
     }
 
     private void finalizarPedido() {
+        
         if (!(usuarioLogado instanceof Cliente cliente)) {
             System.out.println("  ⚠ Apenas clientes podem fazer pedidos."); 
             return;
@@ -406,12 +389,35 @@ public class Menu {
             System.out.println("  ⚠ Carrinho vazio!"); 
             return; 
         }
-        if (cliente.getEnderecos().isEmpty()) {
-            System.out.println("  ⚠ Cadastre um endereço antes de finalizar o pedido.");
-            cadastrarEndereco(cliente); 
-            return;
-        }
         try {
+            Endereco enderecoEscolhido ;
+            if (cliente.getEnderecos().isEmpty()) {
+                System.out.println("⚠ Nenhum endereço cadastrado.");
+                cadastrarEndereco(cliente);
+                enderecoEscolhido = cliente.getEnderecoEntrega();
+            } else {
+
+                System.out.println("\nEndereços cadastrados:");
+
+                List<Endereco> enderecos = cliente.getEnderecos();
+
+                for (int i = 0; i < enderecos.size(); i++) {
+                    System.out.println("[" + (i + 1) + "] " + enderecos.get(i));
+                }
+
+                System.out.println("[0] Cadastrar novo endereço");
+
+                System.out.print("Escolha: ");
+                int opcao = Integer.parseInt(sc.nextLine());
+
+                if (opcao == 0) {
+                    cadastrarEndereco(cliente);
+                    enderecoEscolhido = cliente.getEnderecos().get(cliente.getEnderecos().size() - 1);
+                } else {
+                    enderecoEscolhido = enderecos.get(opcao - 1);
+                }
+            }
+
             imprimirTitulo("FINALIZAR PEDIDO");
             Pedido pedido = new Pedido(cliente, carrinho.getItens(), cliente.getEnderecoEntrega());
             System.out.println();
@@ -427,8 +433,7 @@ public class Menu {
             System.out.print("  Opção: ");
             Pagamento pg = switch (sc.nextLine().trim()) {
                 case "1" -> { 
-                    System.out.print("  Chave Pix: "); 
-                    yield new PagamentoPix(pedido.calcularTotalComFrete(), sc.nextLine().trim()); 
+                    yield new PagamentoPix(pedido.calcularTotalComFrete());
                 }
                 case "2" -> {
                     System.out.println();

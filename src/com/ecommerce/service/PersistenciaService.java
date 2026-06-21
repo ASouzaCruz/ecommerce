@@ -13,6 +13,7 @@ public class PersistenciaService {
     private static final String ARQ_USUARIOS  = DIR + "usuarios.csv";
     private static final String ARQ_PEDIDOS   = DIR + "pedidos.csv";
     private static final String ARQ_ITENS     = DIR + "itens_pedido.csv";
+    private static final String ARQ_ENDERECOS = DIR + "enderecos.csv";
     private static final String SEP = ";";
 
     public PersistenciaService() {
@@ -68,12 +69,23 @@ public class PersistenciaService {
 
     // ── USUARIOS ─────────────────────────────────────────────────────────────
     public void salvarUsuarios(List<com.ecommerce.model.usuario.Usuario> usuarios) {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(ARQ_USUARIOS))) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(ARQ_USUARIOS));PrintWriter pwEnd = new PrintWriter(new FileWriter(ARQ_ENDERECOS))) {
             pw.println("id;tipo;nome;email;senha;extra1;extra2");
+            pwEnd.println("usuarioId;rua;numero;bairro;cidade;estado;cep");
             for (var u : usuarios) {
                 if (u instanceof Cliente cl) {
                     pw.printf("%s;CLIENTE;%s;%s;%s;%s;%n",
                             cl.getId(), cl.getNome(), cl.getEmail(), cl.getSenha(), cl.getCpf());
+                    for (Endereco e : cl.getEnderecos()) {
+                        pwEnd.printf("%s;%s;%s;%s;%s;%s;%s%n",
+                                cl.getId(),
+                                e.getRua(),
+                                e.getNumero(),
+                                e.getBairro(),
+                                e.getCidade(),
+                                e.getEstado(),
+                                e.getCep());
+                    }
                 } else if (u instanceof Administrador adm) {
                     pw.printf("%s;ADMIN;%s;%s;%s;%s;%b%n",
                             adm.getId(), adm.getNome(), adm.getEmail(), adm.getSenha(),
@@ -88,6 +100,7 @@ public class PersistenciaService {
     public List<com.ecommerce.model.usuario.Usuario> carregarUsuarios() {
         List<com.ecommerce.model.usuario.Usuario> lista = new ArrayList<>();
         File f = new File(ARQ_USUARIOS);
+        File endFile = new File(ARQ_ENDERECOS);
         if (!f.exists()) return lista;
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             br.readLine();
@@ -108,6 +121,46 @@ public class PersistenciaService {
             }
         } catch (IOException e) {
             System.err.println("Erro ao carregar usuarios: " + e.getMessage());
+        }
+        if (endFile.exists()) {
+
+            try (BufferedReader br = new BufferedReader(new FileReader(endFile))) {
+
+                br.readLine();
+
+                String linha;
+
+                while ((linha = br.readLine()) != null) {
+
+                    String[] c = linha.split(SEP, -1);
+
+                    if (c.length < 7) continue;
+
+                    String usuarioId = c[0];
+
+                    for (Usuario u : lista) {
+
+                        if (u.getId().equals(usuarioId) && u instanceof Cliente cliente) {
+
+                            cliente.adicionarEndereco(
+                                new Endereco(
+                                    c[1], // rua 
+                                    c[2], // numero
+                                    c[3], // bairro
+                                    c[4], // cidade
+                                    c[5], // estado
+                                    c[6]  // cep
+                                )
+                            );
+
+                            break;
+                        }
+                    }
+                }
+
+            } catch (IOException e) {
+                System.err.println("Erro ao carregar enderecos: " + e.getMessage());
+            }
         }
         return lista;
     }

@@ -29,9 +29,12 @@ public class Endereco {
     public void setNumero(String numero) { this.numero = numero; }
     public void setCidade(String cidade) { this.cidade = cidade; }
     public void setEstado(String estado) { this.estado = estado; }
+    public void setBairro(String bairro) {this.bairro = bairro;}
+    public void setCep(String cep) {this.cep = cep;}
 
     @Override
     public String toString() {
         return String.format("%s, %s - %s, %s/%s - CEP: %s", rua, numero, bairro, cidade, estado, cep);
     }
+
 }

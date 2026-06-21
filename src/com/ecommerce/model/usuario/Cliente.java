@@ -37,7 +37,7 @@ public class Cliente extends Usuario {
     }
 
     public String getCpf() { return cpf; }
-    public List<Endereco> getEnderecos() { return enderecos; }
+    public List<Endereco> getEnderecos() { return new ArrayList<>(enderecos); }
 
     public Endereco getEnderecoEntrega() {
         if (enderecos.isEmpty()) throw new IllegalStateException("Cliente nao possui endereco cadastrado.");

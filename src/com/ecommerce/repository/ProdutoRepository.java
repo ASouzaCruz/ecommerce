@@ -28,6 +28,14 @@ public class ProdutoRepository {
         return produtos.stream().filter(p -> p.getId().equals(id)).findFirst();
     }
 
+    public Produto buscarPorNomeOuErro(String nome) {
+        return buscarPorNome(nome).orElseThrow(() -> new ProdutoNaoEncontradoException(nome));
+    }
+
+    public Optional<Produto> buscarPorNome(String nome){
+        return produtos.stream().filter(p -> p.getNome().equalsIgnoreCase(nome)).findFirst();
+    }
+
     public List<Produto> listarTodos() { return new ArrayList<>(produtos); }
 
     public List<Produto> listarDisponiveis() {

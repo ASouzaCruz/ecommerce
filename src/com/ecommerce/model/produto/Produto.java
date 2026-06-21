@@ -1,7 +1,6 @@
 package com.ecommerce.model.produto;
 
 import java.util.Random;
-import java.util.UUID;
 
 public abstract class Produto {
     private String id;

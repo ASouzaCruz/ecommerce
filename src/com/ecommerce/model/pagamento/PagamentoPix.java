@@ -1,16 +1,12 @@
 package com.ecommerce.model.pagamento;
 
-// Implementação inicial baseada no diagrama UML. Algumas funcionalidades possuem apenas a estrutura básica e serão implementadas posteriormente.
-
 public class PagamentoPix extends Pagamento {
     private String chavePix;
     private String codigoPix;
 
-    public PagamentoPix(double valor, String chavePix) {
+    public PagamentoPix(double valor) {
         super(valor);
-        if (chavePix == null || chavePix.isBlank())
-            throw new IllegalArgumentException("Chave Pix invalida.");
-        this.chavePix = chavePix;
+        this.chavePix = "eccomerce@loja.com";
         this.codigoPix = gerarCodigoPix();
     }
 

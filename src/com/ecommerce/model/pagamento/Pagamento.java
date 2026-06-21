@@ -3,8 +3,6 @@ package com.ecommerce.model.pagamento;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-// Implementação inicial baseada no diagrama UML. Algumas funcionalidades possuem apenas a estrutura básica e serão implementadas posteriormente.
-
 public abstract class Pagamento {
     private String id;
     private double valor;
@@ -18,7 +16,7 @@ public abstract class Pagamento {
         this.processado = false;
     }
 
-    // Polimorfismo bonus - cada meio de pagamento processa diferente
+    // Polimorfismo 3 - cada meio de pagamento processa diferente
     public abstract void processar();
     public abstract String getDescricao();
 
