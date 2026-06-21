@@ -1,6 +1,7 @@
 package com.ecommerce;
 
 import com.ecommerce.model.usuario.*;
+import com.ecommerce.model.Pedido;
 import com.ecommerce.model.produto.*;
 import com.ecommerce.repository.*;
 import com.ecommerce.service.PersistenciaService;
@@ -41,6 +42,18 @@ public class Main {
             usuarioRepo.salvar(new Cliente("Joao Silva", "joao@email.com", "senha123", "12345678901"));
             System.out.println("Usuarios de exemplo criados.");
         }
+
+        // --- A SOLUÇÃO ESTÁ AQUI: CARREGAR OS PEDIDOS ---
+        // Usamos listarTodos() dos repositórios para garantir que temos a lista completa (incluindo os de exemplo, se foram criados agora)
+        List<Pedido> pedidos = persistencia.carregarPedidos(usuarioRepo.listarTodos(), produtoRepo.listarTodos());
+        
+        if (!pedidos.isEmpty()) {
+            // OBS: Verifique se o seu PedidoRepository tem o método setPedidos() ou similar.
+            // Caso tenha um nome diferente (ex: inicializarLista), ajuste a linha abaixo.
+            pedidoRepo.setPedidos(pedidos); 
+            System.out.println(pedidos.size() + " pedido(s) carregado(s).");
+        }
+        // ------------------------------------------------
 
         new Menu(produtoRepo, usuarioRepo, pedidoRepo, persistencia).iniciar();
     }
