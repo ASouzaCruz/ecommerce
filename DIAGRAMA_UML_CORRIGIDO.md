@@ -1,65 +1,7 @@
 # Diagrama UML - Sistema E-commerce
 
-
-### Classes Contáveis (Mínimo 11)
-✓ **25 classes implementadas:**
-1. Produto (abstrata)
-2. ProdutoFisico
-3. ProdutoDigital
-4. Usuario (abstrata)
-5. Cliente
-6. Administrador
-7. Pagamento (abstrata)
-8. PagamentoCartao
-9. PagamentoPix
-10. Pedido
-11. ItemPedido
-12. Carrinho
-13. Endereco
-14. UnidadePeso
-15. ProdutoRepository
-16. UsuarioRepository
-17. PedidoRepository
-18. PersistenciaService
-19. Menu
-20. CarrinhoVazioException
-21. EstoqueInsuficienteException
-22. PedidoInvalidoException
-23. ProdutoNaoEncontradoException
-24. UsuarioNaoEncontradoException
-25. TesteUnidadePeso (classe extra)
-
-### Herança e Polimorfismo (Mínimo 2 situações)
-1. **Herança Produto** → calcularFrete(), estaDisponivel(), getTipo()
-2. **Herança Usuario** → podeGerenciarProdutos(), podeVisualizarRelatorios(), getPerfil()
-3. **Herança Pagamento** → processar(), getDescricao()
-
-### Testes (1 classe - extra)
-1. **TesteUnidadePeso** → suite de testes de precisão
-
-### Exceções Personalizadas (5 classes)
-✓ EstoqueInsuficienteException
-✓ PedidoInvalidoException
-✓ CarrinhoVazioException
-✓ ProdutoNaoEncontradoException
-✓ UsuarioNaoEncontradoException
-
-### Estado Dinâmico
-✓ **EstadoPedido** com transições controladas: ABERTO → PAGO → SEPARANDO → ENVIADO → ENTREGUE ou CANCELADO
-
-### Regras de Negócio (Mínimo 5)
-1. ✓ Validação de Email
-2. ✓ Validação de Peso
-3. ✓ Redução de Estoque
-4. ✓ Carrinho Não Pode Estar Vazio
-5. ✓ Apenas Clientes Podem Fazer Pedidos
-6. ✓ Conversão de Unidades de Peso
-7. ✓ Máquina de Estados do Pedido
-8. ✓ Pagamento Só Registra em Pedidos ABERTOS
-
----
-
 ## Diagrama UML Corrigido
+---
 
 \`\`\`mermaid
 classDiagram
@@ -77,22 +19,37 @@ classDiagram
         +calcularFrete()* double
         +estaDisponivel()* boolean
         +getTipo()* String
-        +setNome(String) void
-        +setPreco(double) void
         +getId() String
         +getNome() String
+        +getDescricao() String
+        +getPreco() double
+        +isAtivo() boolean
+        +setId(String) void
+        +setAtivo(boolean) void
+        +setDescricao(String) void
+        +setNome(String) void
+        +setPreco(double) void
+        +toString() String
+        
     }
 
     class ProdutoFisico {
         -double pesoKg
         -int estoque
         -double TARIFA_KG$
+        -validarPeso(double) void
         +calcularFrete() double
         +estaDisponivel() boolean
         +getTipo() String
         +reduzirEstoque(int) void
         +aumentarEstoque(int) void
+        +getPesoKg() double
+        +getPeso(UnidadPeso) double
+        +setPesoKg(double) void
+        +setPeso(double, UnidadePeso) void
         +getEstoque() int
+        +setEstoque(int) void
+        +toString() String
     }
 
     class ProdutoDigital {
@@ -102,6 +59,10 @@ classDiagram
         +estaDisponivel() boolean
         +getTipo() String
         +getLinkDownload() String
+        +getFormato() String
+        +setLinkDownload(String) void
+        +setFormato(String) void
+        +toString() String
     }
 
     Produto <|-- ProdutoFisico
@@ -120,9 +81,12 @@ classDiagram
         +podeGerenciarProdutos()* boolean
         +podeVisualizarRelatorios()* boolean
         +getPerfil()* String
-        +autenticar(String) boolean
         +getId() String
+        +getNome() String
         +getEmail() String
+        +getSenha() String
+        +autenticar(String) boolean
+        +toString() String
     }
 
     class Cliente {
@@ -133,6 +97,8 @@ classDiagram
         +getPerfil() String
         +adicionarEndereco(Endereco) void
         +removerEndereco(String) void
+        +getCpf() String
+        +getEnderecos() List
         +getEnderecoEntrega() Endereco
     }
 
@@ -142,6 +108,9 @@ classDiagram
         +podeGerenciarProdutos() boolean
         +podeVisualizarRelatorios() boolean
         +getPerfil() String
+        +getCargo() String
+        +isSUperAdmin() boolean
+        +setCargo(String) void
         +podeRemoverAdmins() boolean
     }
 
@@ -163,6 +132,12 @@ classDiagram
         +marcarComoProcessado() void
         +getId() String
         +getValor() double
+        +isProcessado() boolean
+        +getDataProcessamento() LocalDateTime
+        +setId(String) void
+        +setProcessado(boolean) void
+        +setDataProcessamento(LocalDateTime) void
+        +toString() String
     }
 
     class PagamentoCartao {
@@ -171,7 +146,12 @@ classDiagram
         -String nomeTitular
         +processar() void
         +getDescricao() String
-        +validarCartao() boolean
+        -getUltimosDigitos() String
+        +getNumeroCartao() String
+        +getParcelas() int
+        +getNomeTitular() String
+        +setNumeroCartao(String) void
+        +setParcelas(int) void
     }
 
     class PagamentoPix {
@@ -180,6 +160,10 @@ classDiagram
         +processar() void
         +getDescricao() String
         -gerarCodigoPix() String
+        +getChavePix() String
+        +getCodigoPix() String
+        +setChavePix(String) void
+        +setCodigoPix(String) void
     }
 
     Pagamento <|-- PagamentoCartao
@@ -205,30 +189,42 @@ classDiagram
     %% ═══════════
     
     class Endereco {
-        -String id
         -String rua
         -String numero
-        -String complemento
         -String cidade
         -String estado
         -String cep
-        +getId() String
+        +getRua() String
+        +getNumero() String
+        +getBairro() String
+        +getCidade() String
+        +getEstado() String
+        +getCep() String
+        +setRua(String) void
+        +setNumero(String) void
+        +setBairro(String) void
+        +setCidade(String) void
+        +setEstado(String) void
+        +setCep(String) void
         +toString() String
     }
-
+ 
     %% ════════════════
     %% ITEM DO PEDIDO
     %% ════════════════
     
     class ItemPedido {
-        -String id
+        -Produto produto
         -int quantidade
         -double precoUnitario
-        -double freteItem
-        +calcularSubtotal() double
-        +calcularTotalComFrete() double
-        +getId() String
-        +getQuantidade() int
+        +calcularSubTotal() double
+        +calcularFrete() double
+        +getProduto () Produto
+        +getQuantidade () int
+        +getPrecoUnitario () int
+        +setQuantidade (int) void
+        +setPrecoUnitario(int) void
+        +toString () String
     }
 
     %% ══════════════════════════════════════════════════════════════
@@ -236,15 +232,16 @@ classDiagram
     %% ══════════════════════════════════════════════════════════════
     
     class Carrinho {
-        -String id
         -List~ItemPedido~ itens
-        +adicionarItem(ItemPedido) void
+        +adicionarItem(Produto, int) void
         +removerItem(String) void
-        +calcularTotal() double
-        +calcularTotalFrete() double
         +limpar() void
         +estaVazio() boolean
+        +calcularTotal() double
+        +calcularTotalFrete() double
+        +getQuantidadeNoPedido(String) int
         +getItens() List
+        +exibir() void
     }
 
     %% ══════════════════════════════════════════════════════════════
@@ -253,6 +250,9 @@ classDiagram
     
     class Pedido {
         -String id
+        -Cliente cliente
+        -Pagamento pagamento
+        -Endereco enderecoEntrega
         -EstadoPedido estado
         -LocalDateTime dataCriacao
         -LocalDateTime dataAtualizacao
@@ -264,8 +264,37 @@ classDiagram
         +calcularTotalFrete() double
         +calcularTotalComFrete() double
         +getId() String
+        +getCliente() Cliente
+        +getItens() List
         +getEstado() EstadoPedido
+        +getPagamento() Pagamento
+        +getDataCriacao() LocalDateTime
+        +getDataAtualizacao() LocalDateTime
+        +getEndereco() Endereco
+        +setId(String) void
+        +setEstado(EstadoPedido) void
+        +setDataCriacao(LocalDateTime) void
+        +setDataAtualizacao(LocalDateTime) void
+        +toString() String
+    }   
+
+    %% ══════════════════════════════════════════════════════════════
+    %% UNIDADE DE PESO - Enum (não conta como classe)
+    %% ══════════════════════════════════════════════════════════════
+    class UnidadePeso {
+        <<enumeration>>
+        GRAMA
+        QUILOGRAMA
+        <<final>> -String simbolo
+        <<final>> -double fatorCOnversaoParaKg
+        +converterParaKg (double) double
+        +converterDeKg (double) double
+        +porSimbolo (String) UnidadePeso
+        +getSimbolo () String
+        +getFatorConversao () double
+        +toString () String
     }
+
 
     %% ══════════════════════════════════════════════════════════════
     %% REPOSITORIES
@@ -276,9 +305,13 @@ classDiagram
         +salvar(Produto) void
         +buscarPorId(String) Optional
         +buscarPorIdOuErro(String) Produto
+        +buscarPorId(String) Optional
+        +buscarPorNomeOuErro(String) Produto
+        +buscarPorNome(String) Optional
         +listarTodos() List
         +listarDisponiveis() List
         +remover(String) void
+        +setProdutos(List) void
     }
 
     class UsuarioRepository {
@@ -286,16 +319,20 @@ classDiagram
         +salvar(Usuario) void
         +buscarPorEmail(String) Optional
         +buscarPorEmailOuErro(String) Usuario
+        +buscarPorId(String) Optional
         +listarTodos() List
         +remover(String) void
+        +setUsuarios(List) void
     }
 
     class PedidoRepository {
         -List~Pedido~ pedidos
         +salvar(Pedido) void
         +buscarPorId(String) Optional
+        +buscarPorIdOuErro(String) Pedido
         +listarTodos() List
         +listarPorCliente(String) List
+        +setPedidos(List) void
     }
 
     %% ══════════════════════════════════════════════════════════════
@@ -303,13 +340,33 @@ classDiagram
     %% ══════════════════════════════════════════════════════════════
     
     class PersistenciaService {
-        -String DIR$
+        <<Final>> -String DIR$
+        <<Final>> -String ARQ_PRODUTOS$
+        <<Final>> -String ARQ_USUARIOS$
+        <<Final>> -String ARQ_PEDIDOS$
+        <<Final>> -String ARQ_ITENS$
+        <<Final>> -String ARQ_ENDERECOS$
+        <<Final>> -String SEP
         +salvarProdutos(List) void
         +carregarProdutos() List
         +salvarUsuarios(List) void
         +carregarUsuarios() List
         +salvarPedidos(List) void
-        +carregarPedidos() List
+        +carregarPedidos(List, List) List
+    }
+
+    %% ══════════════════════════════════════════════════════════════
+    %% TESTE
+    %% ══════════════════════════════════════════════════════════════
+
+    class TesteUnidadePeso {
+        <<static>> -testeConversaoGramaParaKg() void
+        <<static>> -testeConversaoKgParaGrama() void
+        <<static>> -testeCriacaoProdutoComGramas() void
+        <<static>> -testeCriacaoProdutoComQuilogramas() void
+        <<static>> -testeCalculoFrete() void
+        <<static>> -testeValidacaoPesoInvalido() void
+        <<static>> -testeExtremo() void
     }
 
     %% ══════════════════════════════════════════════════════════════
@@ -320,13 +377,33 @@ classDiagram
         -Scanner sc
         -Usuario usuarioLogado
         -Carrinho carrinho
-        -ProdutoRepository produtoRepo
-        -UsuarioRepository usuarioRepo
-        -PedidoRepository pedidoRepo
+        <<final>> -ProdutoRepository produtoRepo
+        <<final>> -UsuarioRepository usuarioRepo
+        <<final>> -PedidoRepository pedidoRepo
+        <<final>> -PersistenciaService persistenciaService
+        -imprimirTitulo(String) void
+        -imprimirOpcoes(String) void
+        -imprimirSeparado(String) void
         +iniciar() void
         -menuLogin() void
+        -fazerLogin() void
+        -cadastrarCliente() void
         -menuPrincipal() void
+        -listarProdutos() void
+        -menuProdutos() void
+        -cadastrarProduto() void
+        -editarProduto() void
+        -removerProduto() void
+        -listarTodosProdutos() void
+        -obterUniadePeso() UnidadePeso
+        -menuCarrinho() void
+        -adicionarCarrinho() void
         -finalizarPedido() void
+        -cadastrarEndereco(Cliente) void
+        -listarMeusPedidos() void
+        -avancarEstadopedido() void
+        -cancelarPedido() void
+        -exibirRelatorio() void
         -salvarDados() void
     }
 
@@ -357,20 +434,6 @@ classDiagram
     class UsuarioNaoEncontradoException {
         <<exception>>
         +UsuarioNaoEncontradoException(String)
-    }
-
-    %% ══════════════════════════════════════════════════════════════
-    %% TESTE
-    %% ══════════════════════════════════════════════════════════════
-
-    class TesteUnidadePeso {
-        <<static>> -testeConversaoGramaParaKg() void
-        <<static>> -testeConversaoKgParaGrama() void
-        <<static>> -testeCriacaoProdutoComGramas() void
-        <<static>> -testeCriacaoProdutoComQuilogramas() void
-        <<static>> -testeCalculoFrete() void
-        <<static>> -testeValidacaoPesoInvalido() void
-        <<static>> -testeExtremo() void
     }
 
     %% ══════════════════════════════════════════════════════════════
@@ -422,24 +485,6 @@ classDiagram
     ProdutoRepository ..> ProdutoNaoEncontradoException : lança
     UsuarioRepository ..> UsuarioNaoEncontradoException : lança
 \`\`\`
-
----
-
-## 📋 Sumário de Conformidade
-
-| Requisito | Status | Comentário |
-|-----------|--------|-----------|
-| **Mínimo 11 Classes** | ✅ **24 CLASSES + 1 extra** | Muito acima do mínimo (excluindo enums) |
-| **CRUD Completo** | ✅ **SIM** | 3 repositories com todas operações |
-| **Encapsulamento Total** | ✅ **100%** | Todos atributos privados com getters/setters |
-| **Polimorfismo** | ✅ **3+ SITUAÇÕES** | Usuario, Produto, Pagamento |
-| **Regras de Negócio** | ✅ **8 REGRAS** | Mais que o mínimo de 5 |
-| **Interação entre Classes** | ✅ **SIM** | Sistema integrado e complexo |
-| **Tratamento de Exceções** | ✅ **SIM** | 5 exceções personalizadas |
-| **Estado Dinâmico** | ✅ **SIM** | Máquina de estados em Pedido |
-| **Persistência em Arquivos** | ✅ **SIM** | 5 arquivos CSV com I/O |
-| **Classes Filhas com Membros** | ✅ **SIM** | Todas filhas têm atributos próprios |
-| **Polimorfismo Relevante** | ✅ **SIM** | Afeta regras de negócio |
 
 ---
 
