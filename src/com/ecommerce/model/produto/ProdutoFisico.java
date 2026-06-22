@@ -35,14 +35,10 @@ public class ProdutoFisico extends Produto {
         this.estoque = estoque;
     }
 
-    /**
-     * Valida se o peso é válido (positivo e dentro de limites razoáveis).
-     */
     private void validarPeso(double pesoValor) {
         if (pesoValor <= 0) {
             throw new IllegalArgumentException("Peso deve ser maior que zero.");
         }
-        // Limite superior: 1000 kg (1 tonelada) é um limite razoável para produtos de e-commerce
         if (pesoValor > 1_000_000) {
             throw new IllegalArgumentException("Peso nao pode exceder 1000 kg (limite maximo para shipping).");
         }

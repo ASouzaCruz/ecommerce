@@ -1,8 +1,5 @@
 package com.ecommerce.model;
 
-// Implementação inicial baseada no diagrama UML.
-// Algumas funcionalidades possuem apenas a estrutura básica e serão implementadas posteriormente.
-
 import com.ecommerce.model.produto.Produto;
 
 public class ItemPedido {
@@ -18,7 +15,7 @@ public class ItemPedido {
         this.quantidade = quantidade;
         this.precoUnitario = produto.getPreco(); // Congelado no momento da criacao
     }
-    //construtor pra persistencia
+    
     public ItemPedido(Produto produto, int quantidade, double precoUnitarioHistorico) {
         this.produto = produto;
         this.quantidade = quantidade;

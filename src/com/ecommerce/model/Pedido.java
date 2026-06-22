@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 
 public class Pedido {
     private String id;
@@ -23,7 +23,8 @@ public class Pedido {
     public Pedido(Cliente cliente, List<ItemPedido> itens, Endereco enderecoEntrega) {
         if (itens == null || itens.isEmpty()) throw new CarrinhoVazioException();
         if (enderecoEntrega == null) throw new IllegalArgumentException("Endereco de entrega obrigatorio.");
-        this.id = UUID.randomUUID().toString();
+        Random random = new Random();
+        this.id = "PED" +  random.nextInt(10000000);
         this.cliente = cliente;
         this.itens = new ArrayList<>(itens);
         this.estado = EstadoPedido.ABERTO;
@@ -31,7 +32,7 @@ public class Pedido {
         this.dataAtualizacao = LocalDateTime.now();
         this.enderecoEntrega = enderecoEntrega;
     }
-    //construtor pra persistencia
+    
     public Pedido(String id, Cliente cliente, EstadoPedido estado, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
         this.id = id;
         this.cliente = cliente;
@@ -39,10 +40,9 @@ public class Pedido {
         this.dataCriacao = dataCriacao;
         this.dataAtualizacao = dataAtualizacao;
         this.itens = new ArrayList<>();
-        this.enderecoEntrega = null; // Não temos isso no CSV atual
+        this.enderecoEntrega = null;
     }
 
-    // Estado dinamico com regras de transicao
     public void avancarEstado(EstadoPedido novoEstado) {
         if (!estado.podeTransicionarPara(novoEstado))
             throw new PedidoInvalidoException(
@@ -95,7 +95,6 @@ public class Pedido {
     public String toString() {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         return String.format("Pedido #%s | Cliente: %s | Estado: %s | Total: R$ %.2f | Data: %s",
-                id.substring(0, 8), cliente.getNome(), estado, calcularTotalComFrete(),
-                dataCriacao.format(fmt));
+                id, cliente.getNome(), estado, calcularTotalComFrete(), dataCriacao.format(fmt));
     }
 }

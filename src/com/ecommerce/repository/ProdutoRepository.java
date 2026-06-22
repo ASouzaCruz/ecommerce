@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// Implementação inicial baseada no diagrama UML.
-// Algumas funcionalidades possuem apenas a estrutura básica e serão implementadas posteriormente.
-
 public class ProdutoRepository {
 
     private List<Produto> produtos = new ArrayList<>();

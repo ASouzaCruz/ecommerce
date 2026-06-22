@@ -189,7 +189,6 @@ public class PersistenciaService {
     }
 
     public List<Pedido> carregarPedidos(List<com.ecommerce.model.usuario.Usuario> usuarios, List<Produto> produtos) {
-        // 1. Mapas para busca rápida (Evita lentidão ao procurar por IDs)
         Map<String, com.ecommerce.model.usuario.Usuario> usuariosMap = new HashMap<>();
         for (var u : usuarios) {
             usuariosMap.put(u.getId(), u);
@@ -200,14 +199,12 @@ public class PersistenciaService {
             produtosMap.put(p.getId(), p);
         }
 
-        // LinkedHashMap mantém a ordem original do arquivo
         Map<String, Pedido> pedidosMap = new LinkedHashMap<>(); 
 
-        // 2. LER OS PEDIDOS (Cabeçalhos)
         File fPedidos = new File(ARQ_PEDIDOS);
         if (fPedidos.exists()) {
             try (BufferedReader br = new BufferedReader(new FileReader(fPedidos))) {
-                br.readLine(); // Pula header: id;clienteId;estado;dataCriacao;dataAtualizacao
+                br.readLine();
                 String linha;
                 while ((linha = br.readLine()) != null) {
                     String[] c = linha.split(SEP, -1);
@@ -221,12 +218,10 @@ public class PersistenciaService {
 
                     var usuario = usuariosMap.get(clienteId);
                     if (usuario instanceof Cliente cliente) {
-                        // Converte Strings para Enum e LocalDateTime
                         EstadoPedido estado = EstadoPedido.valueOf(estadoStr);
                         LocalDateTime dataCriacao = LocalDateTime.parse(dataCriacaoStr);
                         LocalDateTime dataAtualizacao = LocalDateTime.parse(dataAtualizacaoStr);
 
-                        // Usa o construtor de persistência que criamos
                         Pedido pedido = new Pedido(pedidoId, cliente, estado, dataCriacao, dataAtualizacao);
                         pedidosMap.put(pedidoId, pedido);
                     }
@@ -236,11 +231,10 @@ public class PersistenciaService {
             }
         }
 
-        // 3. LER OS ITENS DOS PEDIDOS
         File fItens = new File(ARQ_ITENS);
         if (fItens.exists() && !pedidosMap.isEmpty()) {
             try (BufferedReader br = new BufferedReader(new FileReader(fItens))) {
-                br.readLine(); // Pula header: pedidoId;produtoId;quantidade;precoUnitario
+                br.readLine();
                 String linha;
                 while ((linha = br.readLine()) != null) {
                     String[] c = linha.split(SEP, -1);
@@ -254,9 +248,7 @@ public class PersistenciaService {
                     Pedido pedido = pedidosMap.get(pedidoId);
                     Produto produto = produtosMap.get(produtoId);
 
-                    // Se encontrou o pedido e o produto correspondentes na memória
                     if (pedido != null && produto != null) {
-                        // Usa o construtor de persistência do ItemPedido
                         ItemPedido item = new ItemPedido(produto, quantidade, precoUnitario);
                         pedido.getItens().add(item);
                     }
@@ -266,7 +258,6 @@ public class PersistenciaService {
             }
         }
 
-        // Retorna apenas a lista de valores (os Pedidos completos)
         return new ArrayList<>(pedidosMap.values());
     }
     

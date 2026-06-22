@@ -28,6 +28,12 @@ public class Main {
             System.out.println(usuarios.size() + " usuario(s) carregado(s).");
         }
 
+        List<Pedido> pedidos = persistencia.carregarPedidos(usuarioRepo.listarTodos(), produtoRepo.listarTodos());
+        if (!pedidos.isEmpty()) {
+            pedidoRepo.setPedidos(pedidos); 
+            System.out.println(pedidos.size() + " pedido(s) carregado(s).");
+        }
+
         // Dados iniciais se nao houver nada salvo
         if (produtoRepo.listarTodos().isEmpty()) {
             produtoRepo.salvar(new ProdutoFisico("Teclado Mecanico", "Switch Blue, RGB", 350.0, 1.2, 15));
@@ -41,15 +47,6 @@ public class Main {
             usuarioRepo.salvar(new Administrador("Admin", "admin@loja.com", "admin123", "Gerente", true));
             usuarioRepo.salvar(new Cliente("Joao Silva", "joao@email.com", "senha123", "12345678901"));
             System.out.println("Usuarios de exemplo criados.");
-        }
-
-        // CARREGAR OS PEDIDOS
-        // Usamos listarTodos() dos repositórios para garantir que temos a lista completa (incluindo os de exemplo, se foram criados agora)
-        List<Pedido> pedidos = persistencia.carregarPedidos(usuarioRepo.listarTodos(), produtoRepo.listarTodos());
-        
-        if (!pedidos.isEmpty()) {
-            pedidoRepo.setPedidos(pedidos); 
-            System.out.println(pedidos.size() + " pedido(s) carregado(s).");
         }
 
         new Menu(produtoRepo, usuarioRepo, pedidoRepo, persistencia).iniciar();
