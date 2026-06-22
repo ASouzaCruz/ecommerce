@@ -2,7 +2,7 @@
 
 
 ### Classes Contáveis (Mínimo 11)
-✓ **13 classes implementadas:**
+✓ **24 classes implementadas:**
 1. Produto (abstrata)
 2. ProdutoFisico
 3. ProdutoDigital
@@ -16,11 +16,26 @@
 11. ItemPedido
 12. Carrinho
 13. Endereco
+14. UnidadePeso
+15. ProdutoRepository
+16. UsuarioRepository
+17. PedidoRepository
+18. PersistenciaService
+19. Menu
+20. CarrinhoVazioException
+21. EstoqueInsuficienteException
+22. PedidoInvalidoException
+23. ProdutoNaoEncontradoException
+24. UsuarioNaoEncontradoException
+25. TesteUnidadePeso 
 
 ### Herança e Polimorfismo (Mínimo 2 situações)
 1. **Herança Produto** → calcularFrete(), estaDisponivel(), getTipo()
 2. **Herança Usuario** → podeGerenciarProdutos(), podeVisualizarRelatorios(), getPerfil()
 3. **Herança Pagamento** → processar(), getDescricao()
+
+### Testes (1 classe - extra)
+1. **TesteUnidadePeso** → suite de testes de precisão
 
 ### Exceções Personalizadas (5 classes)
 ✓ EstoqueInsuficienteException
@@ -33,11 +48,14 @@
 ✓ **EstadoPedido** com transições controladas: ABERTO → PAGO → SEPARANDO → ENVIADO → ENTREGUE ou CANCELADO
 
 ### Regras de Negócio (Mínimo 5)
-1. ✓ Validar estoque antes de adicionar ao carrinho
-2. ✓ Calcular frete diferenciado por tipo de produto
-3. ✓ Validar transição de estados do pedido
-4. ✓ Controlar permissões por tipo de usuário
-5. ✓ Processamento de pagamentos com validação
+1. ✓ Validação de Email
+2. ✓ Validação de Peso
+3. ✓ Redução de Estoque
+4. ✓ Carrinho Não Pode Estar Vazio
+5. ✓ Apenas Clientes Podem Fazer Pedidos
+6. ✓ Conversão de Unidades de Peso
+7. ✓ Máquina de Estados do Pedido
+8. ✓ Pagamento Só Registra em Pedidos ABERTOS
 
 ---
 
@@ -342,6 +360,20 @@ classDiagram
     }
 
     %% ══════════════════════════════════════════════════════════════
+    %% TESTE
+    %% ══════════════════════════════════════════════════════════════
+
+    class TesteUnidadePeso {
+        <<static>> -testeConversaoGramaParaKg() void
+        <<static>> -testeConversaoKgParaGrama() void
+        <<static>> -testeCriacaoProdutoComGramas() void
+        <<static>> -testeCriacaoProdutoComQuilogramas() void
+        <<static>> -testeCalculoFrete() void
+        <<static>> -testeValidacaoPesoInvalido() void
+        <<static>> -testeExtremo() void
+    }
+
+    %% ══════════════════════════════════════════════════════════════
     %% RELACIONAMENTOS E ASSOCIAÇÕES
     %% ══════════════════════════════════════════════════════════════
 
@@ -395,18 +427,19 @@ classDiagram
 
 ## 📋 Sumário de Conformidade
 
-| Requisito | Status | Detalhes |
-|-----------|--------|----------|
-| **11+ Classes** | ✅ | 13 classes implementadas |
-| **Encapsulamento** | ✅ | Todos atributos privados com getters/setters |
-| **Herança** | ✅ | 3 hierarquias de classes (Produto, Usuario, Pagamento) |
-| **Polimorfismo** | ✅ | 3+ métodos abstratos implementados |
-| **5 Regras Negócio** | ✅ | Estoque, Frete, Transições, Permissões, Pagamento |
-| **Estado Dinâmico** | ✅ | EstadoPedido com validação de transição |
-| **5 Exceções** | ✅ | Todas as exceções personalizadas |
-| **Persistência** | ✅ | PersistenciaService implementado |
-| **Interface Usuário** | ✅ | Menu com Scanner |
-| **Relacionamentos** | ✅ | Todas as multiplicidades definidas |
+| Requisito | Status | Comentário |
+|-----------|--------|-----------|
+| **Mínimo 11 Classes** | ✅ **24 CLASSES + 1 extra** | Muito acima do mínimo (excluindo enums) |
+| **CRUD Completo** | ✅ **SIM** | 3 repositories com todas operações |
+| **Encapsulamento Total** | ✅ **100%** | Todos atributos privados com getters/setters |
+| **Polimorfismo** | ✅ **3+ SITUAÇÕES** | Usuario, Produto, Pagamento |
+| **Regras de Negócio** | ✅ **8 REGRAS** | Mais que o mínimo de 5 |
+| **Interação entre Classes** | ✅ **SIM** | Sistema integrado e complexo |
+| **Tratamento de Exceções** | ✅ **SIM** | 5 exceções personalizadas |
+| **Estado Dinâmico** | ✅ **SIM** | Máquina de estados em Pedido |
+| **Persistência em Arquivos** | ✅ **SIM** | 5 arquivos CSV com I/O |
+| **Classes Filhas com Membros** | ✅ **SIM** | Todas filhas têm atributos próprios |
+| **Polimorfismo Relevante** | ✅ **SIM** | Afeta regras de negócio |
 
 ---
 
