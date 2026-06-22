@@ -69,3 +69,18 @@ Após a execução, o sistema iniciará o menu interativo no terminal.
 
 ---
 
+# Instrução para teste:
+
+Existem um Cliente e um Admin já criados no inicio para testes interativos no terminal.
+
+Cliente de teste:
+```
+Email: joao@email.com
+Senha: senha123
+```
+Admin de teste: 
+
+```
+Email: admin@loja.com
+Senha: admin123
+```
