@@ -2,7 +2,7 @@
 
 
 ### Classes Contáveis (Mínimo 11)
-✓ **24 classes implementadas:**
+✓ **25 classes implementadas:**
 1. Produto (abstrata)
 2. ProdutoFisico
 3. ProdutoDigital
@@ -27,7 +27,7 @@
 22. PedidoInvalidoException
 23. ProdutoNaoEncontradoException
 24. UsuarioNaoEncontradoException
-25. TesteUnidadePeso 
+25. TesteUnidadePeso (classe extra)
 
 ### Herança e Polimorfismo (Mínimo 2 situações)
 1. **Herança Produto** → calcularFrete(), estaDisponivel(), getTipo()
